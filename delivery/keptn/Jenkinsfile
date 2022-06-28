@@ -41,7 +41,7 @@ node {
                      "data": {
                         
                        "start": "${params.StartTime}",
-                        "end": "${params.EndTime",
+                        "end": "${params.EndTime}",
                         "project": "${params.Project}",
                         "stage": "${params.Stage}",
                         "service": "${params.Service}",
