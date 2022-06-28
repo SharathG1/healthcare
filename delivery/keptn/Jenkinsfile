@@ -31,10 +31,7 @@ node {
         keptn.keptnAddResources('keptn/sli.yaml','prometheus/sli.yaml')
         keptn.keptnAddResources('keptn/slo.yaml','slo.yaml')
     }
-     stage('Evaluate Build with Keptn') {
-           steps{
-               script {
-                    println  "About to execute keptn evaluation"
+    stage('Evaluate Build with Keptn') {
                     //Get the start time of the test
                     def startTime = get_timestamp()
                     def endTime = get_timestamp()
@@ -59,9 +56,7 @@ node {
 
                     //Post the start-evaluation event to Keptn API
                     def kept_context_request = httpRequest contentType: 'APPLICATION_JSON', customHeaders: [[maskValue: true, name: 'x-token', value: "${env.KEPTN_API_TOKEN}"]], httpMode: 'POST', requestBody: keptn_json, responseHandle: 'STRING', url: "${env.KEPTN_BRIDGE}/v1/event", validResponseCodes: "100:404"
-               }
-           }
-     }
+    }
         
     stage('Trigger Quality Gate') {
         echo "Quality Gates ONLY: Just triggering an SLI/SLO-based evaluation for the passed timeframe"
