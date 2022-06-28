@@ -6,13 +6,13 @@ node {
         parameters([
          string(defaultValue: 'podtato-head', description: 'Name of your Keptn Project for Quality Gate Feedback ', name: 'Project', trim: false), 
          string(defaultValue: 'hardening', description: 'Stage in your Keptn project used for for Quality Gate Feedback', name: 'Stage', trim: false),
-         //string(defaultValue: 'production', description: 'Stage in your Keptn project used for for Quality Gate Feedback', name: 'Stage', trim: false) 
+         string(defaultValue: 'production', description: 'Stage in your Keptn project used for for Quality Gate Feedback', name: 'Stage', trim: false) 
          string(defaultValue: 'hello-service', description: 'Servicename used to keep SLIs and SLOs', name: 'Service', trim: false),
          choice(choices: ['dynatrace', 'prometheus',''], description: 'Select which monitoring tool should be configured as SLI provider', name: 'Monitoring', trim: false),
          choice(choices: ['basic', 'perftest'], description: 'Decide which set of SLIs you want to evaluate. The sample comes with: basic and perftest', name: 'SLI'),
-         //string(defaultValue: '660', description: 'Start timestamp or number of seconds from Now()', name: 'StartTime', trim: false),
-         //string(defaultValue: '60', description: 'End timestamp or number of seconds from Now(). If empty defaults to Now()', name: 'EndTime', trim: false),
-         //string(defaultValue: '3', description: 'How many minutes to wait until Keptn is done? 0 to not wait', name: 'WaitForResult'),
+         string(defaultValue: '660', description: 'Start timestamp or number of seconds from Now()', name: 'StartTime', trim: false),
+         string(defaultValue: '60', description: 'End timestamp or number of seconds from Now(). If empty defaults to Now()', name: 'EndTime', trim: false),
+         string(defaultValue: '3', description: 'How many minutes to wait until Keptn is done? 0 to not wait', name: 'WaitForResult'),
         ])
     ])
 
@@ -28,7 +28,7 @@ node {
         keptn.keptnConfigureMonitoring monitoring:"prometheus"
         // Upload all the files
         //keptn.keptnAddResources('keptn/dynatrace/dynatrace.conf.yaml',)
-        keptn.keptnAddResources('keptn/sli.yaml','sli.yaml')
+        keptn.keptnAddResources('keptn/sli.yaml','prometheus/sli.yaml')
         keptn.keptnAddResources('keptn/slo.yaml','slo.yaml')
     }
     stage('Trigger Quality Gate') {
