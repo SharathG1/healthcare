@@ -18,9 +18,22 @@ objectives:
           - "<=+100%"
           - ">=-80%"
   - sli: go_routines
+    weight: 2
     pass:
       - criteria:
           - "<=100"
+  - sli: failing_request
+    pass:
+      - criteria:
+          - "<=2"
+    fail:
+      - criteria:
+          - ">=5"
+  - sli: http_requests_total_sucess
+    pass:
+      - criteria:
+          - "<=+100%"
+          - ">=-80%"
 total_score:
   pass: "90%"
   warning: "75%"
