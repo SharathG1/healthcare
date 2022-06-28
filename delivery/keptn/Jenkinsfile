@@ -32,9 +32,6 @@ node {
         keptn.keptnAddResources('keptn/slo.yaml','slo.yaml')
     }
     stage('Evaluate Build with Keptn') {
-                    //Get the start time of the test
-                    def startTime = get_timestamp()
-                    def endTime = get_timestamp()
                     
                     //Define the Keptn Json payload for the evaluation request post
                     def keptn_json = """
@@ -43,8 +40,8 @@ node {
                      "source": "Jenkins",
                      "data": {
                         
-                       "start": "${env.testStartTime}Z",
-                        "end": "${env.testEndTime}Z",
+                       "start": "${params.StartTime}",
+                        "end": "${params.EndTime",
                         "project": "${params.Project}",
                         "stage": "${params.Stage}",
                         "service": "${params.Service}",
