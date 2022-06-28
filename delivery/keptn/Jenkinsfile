@@ -61,6 +61,7 @@ node {
                     def kept_context_request = httpRequest contentType: 'APPLICATION_JSON', customHeaders: [[maskValue: true, name: 'x-token', value: "${env.KEPTN_API_TOKEN}"]], httpMode: 'POST', requestBody: keptn_json, responseHandle: 'STRING', url: "${env.KEPTN_BRIDGE}/v1/event", validResponseCodes: "100:404"
                }
            }
+     }
         
     stage('Trigger Quality Gate') {
         echo "Quality Gates ONLY: Just triggering an SLI/SLO-based evaluation for the passed timeframe"
