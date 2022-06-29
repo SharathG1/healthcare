@@ -17,11 +17,59 @@ node {
         ])
     ])
 
+    stage('Initialize Keptn') {
+        keptn.downloadFile("https://raw.githubusercontent.com/SharathG1/podtato-head1/main/delivery/keptn/shipyard.yaml", 'keptn/shipyard.yaml')
+        //keptn.downloadFile("https://github.com/SharathG1/podtato-head1/blob/main/delivery/keptn/prometheus/sli.yaml", 'keptn/dynatrace/dynatrace.conf.yaml')
+        keptn.downloadFile("https://raw.githubusercontent.com/SharathG1/podtato-head1/main/delivery/keptn/prometheus/sli.yaml", 'keptn/sli.yaml')
+        keptn.downloadFile("https://raw.githubusercontent.com/SharathG1/podtato-head1/main/delivery/keptn/slo.yaml", 'keptn/slo.yaml')
+        archiveArtifacts artifacts:'keptn/**/*.*'
+
+        // Initialize the Keptn Project - ensures the Keptn Project is created with the passed shipyard
+        keptn.keptnInit project:"${params.Project}", service:"${params.Service}", stage:"${params.Stage}", image:"${params.Image}", shipyard:'keptn/shipyard.yaml'
+        keptn.keptnConfigureMonitoring monitoring:"prometheus"
+        // Upload all the files
+        //keptn.keptnAddResources('keptn/dynatrace/dynatrace.conf.yaml',)
+        keptn.keptnAddResources('keptn/sli.yaml','prometheus/sli.yaml')
+        keptn.keptnAddResources('keptn/slo.yaml','slo.yaml')
+    }
+    stage('Evaluate Build with Keptn') {
+                    
+                    //Define the Keptn Json payload for the evaluation request post
+                    def keptn_json = """
+                    {
+                     "type": "sh.keptn.event.start-evaluation",
+                     "source": "Jenkins",
+                     "data": {
+                        
+                       "start": "${params.StartTime}",
+                        "end": "${params.EndTime}",
+                        "project": "${params.Project}",
+                        "stage": "${params.Stage}",
+                        "service": "${params.Service}",
+                        "teststrategy": "manual"
+                      }
+                      }
+                     """
+                    // "labels": {"environment": "yourenv","yourney": "youryourney"}
+
+                    //Post the start-evaluation event to Keptn API
+                    def kept_context_request = httpRequest contentType: 'APPLICATION_JSON', customHeaders: [[maskValue: true, name: 'x-token', value: "${env.KEPTN_API_TOKEN}"]], httpMode: 'POST', requestBody: keptn_json, responseHandle: 'STRING', url: "${env.KEPTN_BRIDGE}/v1/event", validResponseCodes: "100:404"
+    }
+
     stage('Trigger Delivery') {
         echo "Progressive Delivery: Triggering Keptn to deliver ${params.Image}"
 
         // send deployment finished to trigger tests
-        def keptnContext = keptn.sendConfigurationTriggeredEvent project:"${params.Project}", service:"${params.Service}", stage:"${params.Stage}", image:"${params.Image}" 
+        def keptnContext = keptn.sendConfigurationChangedEvent project:"${params.Project}", service:"${params.Service}", stage:"${params.Stage}", image:"${params.Image}" 
+        String keptn_bridge = env.KEPTN_BRIDGE
+        echo "Open Keptns Bridge: ${keptn_bridge}/trace/${keptnContext}"
+    }
+
+    stage('Trigger Quality Gate') {
+        echo "Quality Gates ONLY: Just triggering an SLI/SLO-based evaluation for the passed timeframe"
+
+        // Trigger an evaluation
+        def keptnContext = keptn.sendStartEvaluationEvent starttime:"${params.StartTime}", endtime:"${params.EndTime}" 
         String keptn_bridge = env.KEPTN_BRIDGE
         echo "Open Keptns Bridge: ${keptn_bridge}/trace/${keptnContext}"
     }
