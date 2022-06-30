@@ -29,6 +29,6 @@ node {
     
     stage('Trriger Delivery'){
         def keptnContext = keptn.sendConfigurationChangedEvent image:"${params.Image}"
-    
+    }
     }
     
