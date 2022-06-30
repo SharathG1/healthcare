@@ -20,14 +20,14 @@ node {
 
         // Initialize the Keptn Project - ensures the Keptn Project is created with the passed shipyard
         keptn.keptnInit project:"${params.Project}", service:"${params.Service}", stage: "${params.Stage}", image:"${params.Image}", shipyard:'keptn/shipyard.yaml'
-        keptn.keptnConfigureMonitoring monitoring:"prometheus"
+        // keptn.keptnConfigureMonitoring monitoring:"prometheus"
         // Upload all the files
         //keptn.keptnAddResources('keptn/dynatrace/dynatrace.conf.yaml',)
         keptn.keptnAddResources('keptn/sli.yaml','prometheus/sli.yaml')
         keptn.keptnAddResources('keptn/slo.yaml','slo.yaml')
     }
     
-    stage('Trriger Delivery'){
+    stage('Trigger Delivery'){
         def keptnContext = keptn.sendConfigurationChangedEvent image:"${params.Image}"
     }
     }
