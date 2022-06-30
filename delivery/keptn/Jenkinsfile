@@ -26,7 +26,7 @@ node {
 
         // Initialize the Keptn Project - ensures the Keptn Project is created with the passed shipyard
         keptn.keptnInit project:"${params.Project}", service:"${params.Service}", stage:"${params.Stage}", shipyard:'keptn/shipyard.yaml'
-        keptn.keptnConfigureMonitoring monitoring:"prometheus"
+        // keptn.keptnConfigureMonitoring monitoring:"prometheus"
         // Upload all the files
         //keptn.keptnAddResources('keptn/dynatrace/dynatrace.conf.yaml',)
         keptn.keptnAddResources('keptn/sli.yaml','prometheus/sli.yaml')
