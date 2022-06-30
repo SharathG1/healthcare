@@ -66,7 +66,7 @@ node {
     }
     
     stage('Trigger Next Stage') {
-        def keptnContext = keptn.sendDeliveryTriggeredEvent ${params.Project}", service:"${params.Service}", image:"${params.Image}"
+        def keptnContext = keptn.sendDeliveryTriggeredEvent project:"${params.Project}", service:"${params.Service}", image:"${params.Image}"
     }
     
     stage('Wait for Result') {
