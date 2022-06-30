@@ -26,5 +26,9 @@ node {
         keptn.keptnAddResources('keptn/sli.yaml','prometheus/sli.yaml')
         keptn.keptnAddResources('keptn/slo.yaml','slo.yaml')
     }
+    
+    stage('Trriger Delivery'){
+        def keptnContext = keptn.sendConfigurationChangedEvent image:"${params.Image}"
+    
     }
     
