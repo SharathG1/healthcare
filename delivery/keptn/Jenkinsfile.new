@@ -28,7 +28,7 @@ node {
     }
     
     stage('Trigger Delivery'){
-        def keptnContext = keptn.sendConfigurationChangedEvent image:"${params.Image}"
+        def keptnContext = keptn.sendDeliveryTriggeredEvent image:"${params.Image}"
     }
     }
     
