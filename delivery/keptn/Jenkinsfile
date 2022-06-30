@@ -8,7 +8,7 @@ node {
          string(defaultValue: 'hardening', description: 'Stage in your Keptn project used for for Quality Gate Feedback', name: 'Stage', trim: false),
          //string(defaultValue: 'production', description: 'Stage in your Keptn project used for for Quality Gate Feedback', name: 'Stage2', trim: false), 
          string(defaultValue: 'helloservice', description: 'Servicename used to keep SLIs and SLOs', name: 'Service', trim: false),
-         string(defaultValue: 'ghcr.io/podtato-head/podtatoserver:0.1.1', description: 'Name of the service you provide a configuration change for', name: 'Image', trim: false),
+         string(defaultValue: 'docker.io/grabnerandi/simplenodeservice:2.0.0', description: 'Name of the service you provide a configuration change for', name: 'Image', trim: false),
          choice(choices: ['dynatrace', 'prometheus',''], description: 'Select which monitoring tool should be configured as SLI provider', name: 'Monitoring', trim: false),
          choice(choices: ['basic', 'perftest'], description: 'Decide which set of SLIs you want to evaluate. The sample comes with: basic and perftest', name: 'SLI'),
          string(defaultValue: '660', description: 'Start timestamp or number of seconds from Now()', name: 'StartTime', trim: false),
