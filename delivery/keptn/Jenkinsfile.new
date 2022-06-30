@@ -1,0 +1,27 @@
+@Library('keptn-library@6.0.0')_
+def keptn = new sh.keptn.Keptn()
+
+node {
+    properties([
+        parameters([
+         string(defaultValue: 'healthcare', description: 'Name of your Keptn Project for Quality Gate Feedback ', name: 'Project', trim: false), 
+         string(defaultValue: 'healthcareservice', description: 'Servicename used to keep SLIs and SLOs', name: 'Service', trim: false),
+         string(defaultValue: 'ghcr.io/podtato-head/podtatoserver:0.1.1', description: 'Name of the service you provide a configuration change for', name: 'Image', trim: false),
+        ])
+    ])
+    
+     stage('Initialize Keptn') {
+        keptn.downloadFile("https://raw.githubusercontent.com/SharathG1/podtato-head1/main/delivery/keptn/shipyard1.yaml", 'keptn/shipyard.yaml')
+        //keptn.downloadFile("https://github.com/SharathG1/podtato-head1/blob/main/delivery/keptn/prometheus/sli.yaml", 'keptn/dynatrace/dynatrace.conf.yaml')
+        keptn.downloadFile("https://raw.githubusercontent.com/SharathG1/podtato-head1/main/delivery/keptn/prometheus/sli.yaml", 'keptn/sli.yaml')
+        keptn.downloadFile("https://raw.githubusercontent.com/SharathG1/podtato-head1/main/delivery/keptn/slo.yaml", 'keptn/slo.yaml')
+        archiveArtifacts artifacts:'keptn/**/*.*'
+
+        // Initialize the Keptn Project - ensures the Keptn Project is created with the passed shipyard
+        keptn.keptnInit project:"${params.Project}", service:"${params.Service}", image:"${params.Stage}", shipyard:'keptn/shipyard.yaml'
+        keptn.keptnConfigureMonitoring monitoring:"prometheus"
+        // Upload all the files
+        //keptn.keptnAddResources('keptn/dynatrace/dynatrace.conf.yaml',)
+        keptn.keptnAddResources('keptn/sli.yaml','prometheus/sli.yaml')
+        keptn.keptnAddResources('keptn/slo.yaml','slo.yaml')
+    }
