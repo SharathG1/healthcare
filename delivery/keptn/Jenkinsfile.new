@@ -5,6 +5,7 @@ node {
     properties([
         parameters([
          string(defaultValue: 'healthcare', description: 'Name of your Keptn Project for Quality Gate Feedback ', name: 'Project', trim: false), 
+         string(defaultValue: 'dev', description: 'Stage in your Keptn project used for for Quality Gate Feedback', name: 'Stage', trim: false),
          string(defaultValue: 'healthcareservice', description: 'Servicename used to keep SLIs and SLOs', name: 'Service', trim: false),
          string(defaultValue: 'ghcr.io/podtato-head/podtatoserver:0.1.1', description: 'Name of the service you provide a configuration change for', name: 'Image', trim: false),
         ])
@@ -18,7 +19,7 @@ node {
         archiveArtifacts artifacts:'keptn/**/*.*'
 
         // Initialize the Keptn Project - ensures the Keptn Project is created with the passed shipyard
-        keptn.keptnInit project:"${params.Project}", service:"${params.Service}", image:"${params.Stage}", shipyard:'keptn/shipyard.yaml'
+        keptn.keptnInit project:"${params.Project}", service:"${params.Service}", stage: "${params.Stage}", image:"${params.Image}", shipyard:'keptn/shipyard.yaml'
         keptn.keptnConfigureMonitoring monitoring:"prometheus"
         // Upload all the files
         //keptn.keptnAddResources('keptn/dynatrace/dynatrace.conf.yaml',)
