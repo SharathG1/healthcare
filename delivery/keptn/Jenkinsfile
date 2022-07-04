@@ -4,8 +4,8 @@ def keptn = new sh.keptn.Keptn()
 node {
     properties([
         parameters([
-         string(defaultValue: 'keptndemo', description: 'Name of your Keptn Project for Quality Gate Feedback ', name: 'Project', trim: false), 
-         string(defaultValue: 'hardening', description: 'Stage in your Keptn project used for for Quality Gate Feedback', name: 'Stage', trim: false),
+         string(defaultValue: 'healthcare', description: 'Name of your Keptn Project for Quality Gate Feedback ', name: 'Project', trim: false), 
+         string(defaultValue: 'dev', description: 'Stage in your Keptn project used for for Quality Gate Feedback', name: 'Stage', trim: false),
          //string(defaultValue: 'production', description: 'Stage in your Keptn project used for for Quality Gate Feedback', name: 'Stage2', trim: false), 
          string(defaultValue: 'healthservice', description: 'Servicename used to keep SLIs and SLOs', name: 'Service', trim: false),
          string(defaultValue: 'docker.io/grabnerandi/simplenodeservice:2.0.0', description: 'Name of the service you provide a configuration change for', name: 'Image', trim: false),
@@ -32,10 +32,7 @@ node {
         keptn.keptnAddResources('keptn/sli.yaml','prometheus/sli.yaml')
         keptn.keptnAddResources('keptn/slo.yaml','slo.yaml')
     }
-    
-    stage('Trigger Next Stage') {
-        def keptnContext = keptn.sendDeliveryTriggeredEvent project:"${params.Project}", service:"${params.Service}", image:"${params.Image}"
-    }
+   
     stage('Evaluate Build with Keptn') {
                     
                     //Define the Keptn Json payload for the evaluation request post
