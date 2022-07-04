@@ -27,8 +27,51 @@ node {
         keptn.keptnAddResources('keptn/slo.yaml','slo.yaml')
     }
     
-    stage('Trigger Delivery'){
-        def keptnContext = keptn.sendDeliveryTriggeredEvent project:"${params.Project}", service:"${params.Service}", image:"${params.Image}"
+    stage('Evaluate Build with Keptn') {
+                    
+                    //Define the Keptn Json payload for the evaluation request post
+                    def keptn_json = """
+                    {
+                     "type": "sh.keptn.event.start-evaluation",
+                     "source": "Jenkins",
+                     "data": {
+                        
+                       "start": "${params.StartTime}",
+                        "end": "${params.EndTime}",
+                        "project": "${params.Project}",
+                        "stage": "${params.Stage}",
+                        "service": "${params.Service}",
+                        "teststrategy": "manual"
+                      }
+                      }
+                     """
+                    // "labels": {"environment": "yourenv","yourney": "youryourney"}
+
+                    //Post the start-evaluation event to Keptn API
+                    def kept_context_request = httpRequest contentType: 'APPLICATION_JSON', customHeaders: [[maskValue: true, name: 'x-token', value: "${env.KEPTN_API_TOKEN}"]], httpMode: 'POST', requestBody: keptn_json, responseHandle: 'STRING', url: "${env.KEPTN_BRIDGE}/v1/event", validResponseCodes: "100:404"
     }
+        
+    stage('Trigger Quality Gate') {
+        echo "Quality Gates ONLY: Just triggering an SLI/SLO-based evaluation for the passed timeframe"
+
+        // Trigger an evaluation
+        def keptnContext = keptn.sendStartEvaluationEvent starttime:"${params.StartTime}", endtime:"${params.EndTime}" 
+        String keptn_bridge = env.KEPTN_BRIDGE
+        echo "Open Keptns Bridge: ${keptn_bridge}/trace/${keptnContext}"
     }
+    stage('Wait for Result') {
+        waitTime = 0
+        if(params.WaitForResult?.isInteger()) {
+            waitTime = params.WaitForResult.toInteger()
+        }
+
+        if(waitTime > 0) {
+            echo "Waiting until Keptn is done and returns the results"
+            def result = keptn.waitForEvaluationDoneEvent setBuildResult:true, waitTime:waitTime
+            echo "${result}"
+        } else {
+            echo "Not waiting for results. Please check the Keptns bridge for the details!"
+        }
+    }
+}
     
