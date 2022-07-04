@@ -4,7 +4,7 @@ metadata:
   name: "shipyard-sockshop"
 spec:
   stages:
-    - name: "hardening"
+    - name: "dev"
       sequences:
         - name: "delivery"
           tasks:
@@ -16,7 +16,7 @@ spec:
                 teststrategy: "performance"
             - name: "evaluation"
             - name: "release"
-    - name: "production"
+    - name: "staging"
       sequences:
         - name: "delivery"
           triggeredOn:
